@@ -39,19 +39,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hide course name display initially
     courseNameDisplay.style.display = 'none';
     
-    // Initialize app
+    // We need to scroll back to top immediately to prevent auto-scrolling
+    window.scrollTo(0, 0);
+    
+    // Initialize app without any auto-scrolling
     loadFromLocalStorage();
     updateSelectPlaceholderStyle(finalAssessmentName);
     updateAddAssessmentButton();
-    checkWeightStatusAndToggleForm();
     
-    // After initial setup, set the flag to false
+    // Replace the immediate call to checkWeightStatusAndToggleForm
+    // with a non-scrolling version for initial load
+    if (isStepOneSubmitted) {
+        const examWeight = parseInt(finalExamWeight.value) || 0;
+        const totalCurrentWeight = calculateTotalWeight(finalAssessments);
+        const expectedAssessmentWeight = 100 - examWeight;
+        
+        if (totalCurrentWeight === expectedAssessmentWeight && finalAssessments.length > 0) {
+            // Just add the collapsed class without scrolling
+            assessmentForm.classList.add('collapsed');
+        } else {
+            assessmentForm.classList.remove('collapsed');
+        }
+    }
+    
+    // After initial setup, set the flag to false and scroll to top again
     setTimeout(() => {
         isInitialLoad = false;
+        window.scrollTo(0, 0);
     }, 100);
     
     // Event listeners
     resetBtn.addEventListener('click', resetCalculator);
+    
+    // Make sure we start at the top of the page when the page loads
+    window.addEventListener('load', function() {
+        window.scrollTo(0, 0);
+    });
     
     submitStepOneBtn.addEventListener('click', function() {
         if (isStepOneSubmitted) {
@@ -190,22 +213,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to toggle assessment form - private function, not triggered by user clicks
     function toggleAssessmentForm(shouldCollapse) {
+        // During initial load, just modify classes without scrolling
+        if (isInitialLoad) {
+            if (shouldCollapse) {
+                assessmentForm.classList.add('collapsed');
+            } else {
+                assessmentForm.classList.remove('collapsed');
+            }
+            return;
+        }
+        
+        // After initial load, normal behavior
         if (shouldCollapse) {
             // Collapse
             assessmentForm.classList.add('collapsed');
             
-            // Scroll to results if not in editing mode and not on initial page load
-            if (!isEditingMode && !isInitialLoad) {
+            // Scroll to results if not in editing mode
+            if (!isEditingMode) {
                 gradeDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         } else {
             // Expand
             assessmentForm.classList.remove('collapsed');
             
-            // Scroll to the form only if not on initial page load
-            if (!isInitialLoad) {
-                assessmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            // Scroll to the form
+            assessmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
     
@@ -515,25 +547,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (hasSubmittedData) {
                     // Set as submitted if we have all required data
                     isStepOneSubmitted = true;
-                    toggleStepOneEditMode(true);
                     
-                    // Only after confirming submission status should we update these
+                    // Apply submitted state to UI without scrolling
+                    finalExamForm.classList.add('submitted');
+                    courseName.disabled = true;
+                    finalExamWeight.disabled = true;
+                    targetGrade.disabled = true;
+                    submitStepOneBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Info';
+                    submitStepOneBtn.classList.add('edit-mode');
+                    
+                    // Update displays
+                    updateCourseNameDisplay();
                     updateExamInfoDisplay();
                     calculateNeededGrade();
                     
-                    // Restore form collapsed state only if other conditions are met,
-                    // but don't scroll during initial load
+                    // Set form state directly based on weight criteria without scrolling
                     const examWeight = parseInt(finalExamWeight.value) || 0;
                     const totalCurrentWeight = calculateTotalWeight(finalAssessments);
                     const expectedAssessmentWeight = 100 - examWeight;
                     
                     if (totalCurrentWeight === expectedAssessmentWeight && finalAssessments.length > 0) {
-                        // Just set the class directly during initial load to prevent scrolling
-                        if (isInitialLoad) {
-                            assessmentForm.classList.add('collapsed');
-                        } else {
-                            toggleAssessmentForm(true);
-                        }
+                        // Just toggle the class without scrolling
+                        assessmentForm.classList.add('collapsed');
                     } else {
                         assessmentForm.classList.remove('collapsed');
                     }
@@ -549,6 +584,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.removeItem('gradeCalculatorState');
             }
         }
+        
+        // Force a scroll to top to ensure we start at the beginning
+        window.scrollTo(0, 0);
     }
     
     // Reset calculator function
