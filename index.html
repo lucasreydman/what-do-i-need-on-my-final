@@ -3,42 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Final Exam Calculator</title>
+    <meta name="description" content="Calculate what grade you need on your final exam to achieve your target grade.">
+    <title>wdinomf?</title>
+    <link rel="icon" href="favicon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-calculator"></i>Final Grade Calculator</h1>
+        <h1>
+            <img src="favicon.png" class="title-icon" alt="Calculator icon">what do i need on my final?
+        </h1>
         
         <div class="calculator-section">
             <div class="final-exam-form">
+                <div class="step-label"><i class="fas fa-book"></i> Step 1: Enter Final Exam Information</div>
                 <div class="form-group">
                     <label for="courseName">Course Name:</label>
-                    <input type="text" id="courseName" class="input-field" placeholder="Enter your course name">
+                    <input type="text" id="courseName" class="input-field" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="finalExamWeight">Final Exam Weight:</label>
-                    <input type="number" id="finalExamWeight" class="input-field" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="finalExamWeight" class="input-field" min="0" max="100" placeholder="0-100" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="targetGrade">Final Target Grade:</label>
-                    <input type="number" id="targetGrade" class="input-field" min="0" max="100" placeholder="0-100">
+                    <input type="number" id="targetGrade" class="input-field" min="0" max="100" placeholder="0-100" required>
                 </div>
                 
-                <div class="quick-actions">
-                    <button id="justPassBtn" class="pass-btn">I Just Want to Pass....</button>
-                </div>
+                <button id="submitStepOne" class="submit-btn"><i class="fas fa-check"></i> Submit Info</button>
             </div>
             
             <div class="assessment-form">
-                <h3><i class="fas fa-list-check"></i> Completed Assessments</h3>
+                <div class="step-label"><i class="fas fa-list-check"></i> Step 2: Add Completed Assessments</div>
                 <div class="form-group">
-                    <label for="finalAssessmentName">Assessment:</label>
+                    <label for="finalAssessmentName">Assessment Type:</label>
                     <select id="finalAssessmentName" class="input-field" required>
-                        <option value="" disabled selected>Select Assessment Type</option>
+                        <option value="" disabled selected></option>
                         <option value="Test">Test</option>
                         <option value="Midterm Exam">Midterm</option>
                         <option value="Quiz">Quiz</option>
@@ -52,12 +58,12 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="finalAssessmentWeight">Weight:</label>
+                    <label for="finalAssessmentWeight">Assigned Weight:</label>
                     <input type="number" id="finalAssessmentWeight" class="input-field" min="0" max="100" placeholder="0-100">
                 </div>
                 
                 <div class="form-group">
-                    <label for="finalAssessmentGrade">Grade:</label>
+                    <label for="finalAssessmentGrade">Achieved Grade:</label>
                     <input type="number" id="finalAssessmentGrade" class="input-field" min="0" max="100" placeholder="0-100">
                 </div>
                 
@@ -108,21 +114,26 @@
                     </div>
                 </div>
                 <div class="needed-grade">
-                    <h3><i class="fas fa-graduation-cap"></i> Final Result</h3>
-                    <div class="grade-result">You need <span id="neededGrade">0</span> on your final exam to achieve your target grade.</div>
+                    <h3 class="scratchy-heading"><img src="favicon.png" class="result-icon" alt="Calculator icon"> according to my calculations...</h3>
+                    <div class="grade-result">You need a <span id="neededGrade">0</span> on your final exam to achieve your target grade.</div>
                     <p id="neededGradeMessage">Enter your assessments and target grade to calculate.</p>
                     <div id="bestPossibleGrade" class="best-grade hidden">
                         <p><i class="fas fa-star"></i> Your best possible overall grade is <span id="maxPossibleGrade">0</span></p>
                     </div>
                 </div>
                 <div class="action-buttons">
-                    <button id="saveAsPng" class="save-btn"><i class="fas fa-download"></i> Save as PNG</button>
-                    <button id="resetCalculator" class="reset-btn"><i class="fas fa-trash-alt"></i> Reset Calculator</button>
+                    <a href="https://github.com/lucasreydman/what-do-i-need-on-my-final" class="github-button" target="_blank" rel="noopener noreferrer" title="View source code on GitHub">
+                        <i class="fab fa-github"></i> Source Code
+                    </a>
+                    <button id="resetCalculator" class="reset-btn"><i class="fas fa-sync-alt"></i> Reset Calculator</button>
                 </div>
             </div>
         </div>
     </div>
     
     <script src="script.js"></script>
+    <footer class="footer">
+        <p>Created by Lucas Reydman &middot; Last updated: April 9, 2025</p>
+    </footer>
 </body>
 </html> 

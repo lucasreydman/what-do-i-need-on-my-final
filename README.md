@@ -1,46 +1,44 @@
-# Final Exam Calculator
+# What Do I Need On My Final?
 
-A web-based calculator that helps students determine what grade they need on their final exam to achieve their desired overall course grade.
+A web-based calculator that helps students determine what grade they need on their final exam to achieve their target course grade.
+
+**[Try it now!](https://lucasreydman.github.io/what-do-i-need-on-my-final/)**
+
+![Screenshot of the calculator](favicon.png)
 
 ## Features
 
-- Calculate the required final exam grade to achieve a target overall grade
-- Track multiple completed assessments with their weights and grades
-- Save calculator state between sessions using local storage
-- Export your calculation as a PNG image
-- Automatically calculate if your target grade is achievable
-- Mobile-friendly responsive design
-- One-click "I Just Want to Pass" button for quick 50% target setting
+- Calculate the minimum grade needed on a final exam to reach a target overall grade
+- Add and manage multiple assessments (tests, quizzes, assignments, etc.)
+- See your current grade based on completed assessments
+- Calculate best possible grade when target is impossible to reach
+- Automatic saving of inputs using local storage
+- Mobile-responsive design
 
 ## How to Use
 
-1. Enter your course name (optional)
-2. Input the weight of your final exam (as a percentage)
-3. Set your target overall grade
-4. Add your completed assessments:
-   - Select the assessment type or create a custom one
-   - Enter the weight of the assessment
-   - Input the grade you received
-   - Click "Add Assessment"
-5. View your results:
-   - Current weighted grade
-   - Required grade on the final exam
-   - Whether your target is achievable
+1. **Enter Final Exam Information**
+   - Course name
+   - Final exam weight (as a percentage)
+   - Target final grade
 
-If your target grade isn't achievable, the calculator will show you the maximum possible grade you can achieve.
+2. **Add Completed Assessments**
+   - Select assessment type or create a custom one
+   - Enter the weight and achieved grade for each assessment
+   - Add as many assessments as needed
+
+3. **Get Your Result**
+   - See what grade you need on the final exam
+   - View your current grade before the final
+   - If your target is unreachable, see the best possible grade you can achieve
 
 ## Technologies Used
 
 - HTML5
 - CSS3
-- JavaScript (ES6+)
-- [html2canvas](https://html2canvas.hertzen.com/) for PNG export
-- [Font Awesome](https://fontawesome.com/) for icons
+- JavaScript (Vanilla)
+- Local Storage API for saving calculator state
 
-## License
+## Development
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Author
-
-Created by Lucas Reydman
+This calculator is designed to be simple and dependency-free. It runs entirely in the browser without requiring any backend services.

@@ -1,12 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Add html2canvas script
-    const html2canvasScript = document.createElement('script');
-    html2canvasScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    html2canvasScript.integrity = 'sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==';
-    html2canvasScript.crossOrigin = 'anonymous';
-    html2canvasScript.referrerPolicy = 'no-referrer';
-    document.head.appendChild(html2canvasScript);
-    
     // DOM Elements - Final Exam Mode
     const courseName = document.getElementById('courseName');
     const courseNameDisplay = document.getElementById('courseNameDisplay');
@@ -23,62 +15,58 @@ document.addEventListener('DOMContentLoaded', function() {
     const neededGradeElement = document.getElementById('neededGrade');
     const neededGradeMessage = document.getElementById('neededGradeMessage');
     const finalWeightWarning = document.getElementById('finalWeightWarning');
-    const justPassBtn = document.getElementById('justPassBtn');
     const bestPossibleGrade = document.getElementById('bestPossibleGrade');
     const maxPossibleGrade = document.getElementById('maxPossibleGrade');
     const displayFinalExamWeight = document.getElementById('displayFinalExamWeight');
     const displayTargetGrade = document.getElementById('displayTargetGrade');
-    const saveAsPngBtn = document.getElementById('saveAsPng');
+    const submitStepOneBtn = document.getElementById('submitStepOne');
+    const finalExamForm = document.querySelector('.final-exam-form');
+    const resetBtn = document.getElementById('resetCalculator');
     
     // Section elements for collapsing/expanding
     const assessmentForm = document.querySelector('.assessment-form');
-    const assessmentFormToggle = document.createElement('button');
-    assessmentFormToggle.className = 'toggle-btn';
-    assessmentFormToggle.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Assessments Form';
-    assessmentForm.prepend(assessmentFormToggle);
-    
-    const resultsSection = document.querySelector('.results-section');
     const gradeDisplay = document.querySelector('.grade-display');
     
-    // Store assessments
+    // App state variables
+    let isStepOneSubmitted = false;
     let finalAssessments = [];
     let isEditingMode = false;
     
-    // Load saved data
+    // Set course name as required
+    courseName.setAttribute('required', 'true');
+    
+    // Hide course name display initially
+    courseNameDisplay.style.display = 'none';
+    
+    // Initialize app
     loadFromLocalStorage();
-    
-    // Initialize placeholder styling
     updateSelectPlaceholderStyle(finalAssessmentName);
-    
-    // Check if we should collapse the form initially
+    updateAddAssessmentButton();
     checkWeightStatusAndToggleForm();
     
-    // Toggle assessment form visibility
-    assessmentFormToggle.addEventListener('click', function() {
-        toggleAssessmentForm();
-    });
+    // Event listeners
+    resetBtn.addEventListener('click', resetCalculator);
     
-    // Just Want to Pass button
-    justPassBtn.addEventListener('click', function() {
-        targetGrade.value = 50;
-        calculateNeededGrade();
-        saveToLocalStorage();
+    submitStepOneBtn.addEventListener('click', function() {
+        if (isStepOneSubmitted) {
+            // Switch to edit mode
+            toggleStepOneEditMode(false);
+        } else {
+            // Try to submit
+            if (validateRequiredFields()) {
+                toggleStepOneEditMode(true);
+                
+                // Only when submitting should we calculate and update displays
+                calculateNeededGrade();
+                updateExamInfoDisplay();
+                checkWeightStatusAndToggleForm();
+                saveToLocalStorage();
+            }
+        }
     });
     
     // Handle course name changes
-    courseName.addEventListener('input', function() {
-        updateCourseNameDisplay();
-        saveToLocalStorage();
-    });
-    
-    // Update course name display
-    function updateCourseNameDisplay() {
-        let displayText = courseName.value.trim();
-        if (!displayText) {
-            displayText = 'Course Name';
-        }
-        courseNameDisplay.textContent = displayText;
-    }
+    courseName.addEventListener('input', updateCourseNameDisplay);
     
     // Handle custom assessment name input and placeholder styling
     finalAssessmentName.addEventListener('change', function() {
@@ -103,41 +91,113 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 this.value = Math.max(0, Math.min(100, value));
             }
-            
-            saveToLocalStorage();
         });
     });
     
-    // Update calculations when final exam or target grade changes
-    [finalExamWeight, targetGrade].forEach(input => {
-        input.addEventListener('input', function() {
-            calculateNeededGrade();
-            updateExamInfoDisplay();
-            checkWeightStatusAndToggleForm();
-            saveToLocalStorage();
-        });
-    });
-    
-    // Function to toggle assessment form
-    function toggleAssessmentForm() {
-        const isCollapsed = assessmentForm.classList.contains('collapsed');
+    // Add assessment button
+    addFinalAssessmentBtn.addEventListener('click', function() {
+        if (!isStepOneSubmitted) {
+            alert('Please submit your course information first.');
+            return;
+        }
         
-        if (isCollapsed) {
-            // Expand
-            assessmentForm.classList.remove('collapsed');
-            assessmentFormToggle.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Assessments Form';
+        addFinalAssessment();
+    });
+    
+    // Function to toggle edit mode for Step 1
+    function toggleStepOneEditMode(submitted) {
+        isStepOneSubmitted = submitted;
+        
+        if (submitted) {
+            // Lock the fields
+            finalExamForm.classList.add('submitted');
+            courseName.disabled = true;
+            finalExamWeight.disabled = true;
+            targetGrade.disabled = true;
             
-            // Scroll to the form
-            assessmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Change button
+            submitStepOneBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Info';
+            submitStepOneBtn.classList.add('edit-mode');
         } else {
+            // Unlock the fields
+            finalExamForm.classList.remove('submitted');
+            courseName.disabled = false;
+            finalExamWeight.disabled = false;
+            targetGrade.disabled = false;
+            
+            // Change button back
+            submitStepOneBtn.innerHTML = '<i class="fas fa-check"></i> Submit Info';
+            submitStepOneBtn.classList.remove('edit-mode');
+        }
+        
+        // Update course name display based on new submission status
+        updateCourseNameDisplay();
+    }
+    
+    // Function to validate all required fields
+    function validateRequiredFields() {
+        if (!courseName.value.trim()) {
+            alert('Please enter a course name.');
+            courseName.focus();
+            return false;
+        }
+        
+        if (!finalExamWeight.value) {
+            alert('Please enter your final exam weight.');
+            finalExamWeight.focus();
+            return false;
+        }
+        
+        if (!targetGrade.value) {
+            alert('Please enter your target grade.');
+            targetGrade.focus();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Function to capitalize first letter of each word
+    function capitalizeWords(string) {
+        return string
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+    
+    // Update course name display
+    function updateCourseNameDisplay() {
+        let displayText = courseName.value.trim();
+        
+        // Only show course name in results if Step 1 has been submitted
+        if (!displayText || !isStepOneSubmitted) {
+            courseNameDisplay.style.display = 'none';
+        } else {
+            // Capitalize first letter of each word
+            displayText = capitalizeWords(displayText);
+            
+            courseNameDisplay.style.display = 'block';
+            courseNameDisplay.textContent = displayText;
+        }
+    }
+    
+    // Function to toggle assessment form - private function, not triggered by user clicks
+    function toggleAssessmentForm(shouldCollapse) {
+        if (shouldCollapse) {
             // Collapse
             assessmentForm.classList.add('collapsed');
-            assessmentFormToggle.innerHTML = '<i class="fas fa-chevron-down"></i> Show Assessments Form';
             
             // Scroll to results if not in editing mode
             if (!isEditingMode) {
                 gradeDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
+        } else {
+            // Expand
+            assessmentForm.classList.remove('collapsed');
+            
+            // Scroll to the form
+            assessmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
     
@@ -151,15 +211,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // If weight is achieved and we have assessments and not in editing mode, collapse the form
         if (totalCurrentWeight === expectedAssessmentWeight && finalAssessments.length > 0 && !isEditingMode) {
-            if (!assessmentForm.classList.contains('collapsed')) {
-                assessmentForm.classList.add('collapsed');
-                assessmentFormToggle.innerHTML = '<i class="fas fa-chevron-down"></i> Show Assessments Form';
-                
-                // Scroll to results
-                setTimeout(() => {
-                    gradeDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 300);
-            }
+            toggleAssessmentForm(true);
+        } else {
+            toggleAssessmentForm(false);
         }
     }
     
@@ -171,11 +225,6 @@ document.addEventListener('DOMContentLoaded', function() {
             selectElement.classList.remove('placeholder-visible');
         }
     }
-    
-    // Add assessment in final exam mode
-    addFinalAssessmentBtn.addEventListener('click', function() {
-        addFinalAssessment();
-    });
     
     function getAssessmentName(select, customInput) {
         return select.value === 'custom' ? customInput.value.trim() : select.value;
@@ -217,6 +266,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Check if we should collapse the form
         checkWeightStatusAndToggleForm();
+        
+        // Change button text and style after first assessment is added
+        updateAddAssessmentButton();
+    }
+    
+    // Function to update the Add Assessment button based on whether assessments exist
+    function updateAddAssessmentButton() {
+        if (finalAssessments.length > 0) {
+            addFinalAssessmentBtn.innerHTML = '<i class="fas fa-plus"></i> Add Another Assessment';
+            addFinalAssessmentBtn.classList.add('another');
+        } else {
+            addFinalAssessmentBtn.innerHTML = '<i class="fas fa-plus"></i> Add Assessment';
+            addFinalAssessmentBtn.classList.remove('another');
+        }
     }
     
     function resetForm(nameSelect, customInput, weightInput, gradeInput) {
@@ -248,6 +311,9 @@ document.addEventListener('DOMContentLoaded', function() {
             finalAssessmentsList.appendChild(row);
         });
         
+        // Update the Add Assessment button text and style
+        updateAddAssessmentButton();
+        
         // Add event listeners to delete buttons
         document.querySelectorAll('#finalAssessmentsList .delete-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -278,13 +344,10 @@ document.addEventListener('DOMContentLoaded', function() {
         isEditingMode = true;
         
         // Expand form if collapsed
-        if (assessmentForm.classList.contains('collapsed')) {
-            assessmentForm.classList.remove('collapsed');
-            assessmentFormToggle.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Assessments Form';
-        }
+        toggleAssessmentForm(false);
         
         // Populate form with assessment data
-        if (assessment.name === 'Test' || assessment.name === 'Midterm' || 
+        if (assessment.name === 'Test' || assessment.name === 'Midterm Exam' || 
             assessment.name === 'Quiz' || assessment.name === 'Lab' || 
             assessment.name === 'Project' || assessment.name === 'Assignment' || 
             assessment.name === 'Essay') {
@@ -344,14 +407,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const expectedAssessmentWeight = 100 - examWeight;
         
         // Show warning if current assessment weights don't equal expected value
-        if (totalCurrentWeight !== expectedAssessmentWeight) {
+        if (isStepOneSubmitted && totalCurrentWeight !== expectedAssessmentWeight) {
             const difference = expectedAssessmentWeight - totalCurrentWeight;
             let warningMessage = '';
             
             if (difference > 0) {
-                warningMessage = `<i class="fas fa-exclamation-triangle"></i> Your current assessments total <strong>${totalCurrentWeight}%</strong> but should equal <strong>${expectedAssessmentWeight}%</strong> (100% - ${examWeight}% final exam weight). You need to add <strong>${difference}%</strong> more weight.`;
+                warningMessage = `<i class="fas fa-exclamation-triangle"></i> Your current total weight is <strong>${totalCurrentWeight}%</strong> but should equal <strong>${expectedAssessmentWeight}%</strong>. You need to add <strong>${difference}%</strong> more weight.`;
             } else {
-                warningMessage = `<i class="fas fa-exclamation-triangle"></i> Your current assessments total <strong>${totalCurrentWeight}%</strong> but should equal <strong>${expectedAssessmentWeight}%</strong> (100% - ${examWeight}% final exam weight). You need to remove <strong>${Math.abs(difference)}%</strong> weight.`;
+                warningMessage = `<i class="fas fa-exclamation-triangle"></i> Your current total weight is <strong>${totalCurrentWeight}%</strong> but should equal <strong>${expectedAssessmentWeight}%</strong>. You need to remove <strong>${Math.abs(difference)}%</strong> weight.`;
             }
             
             finalWeightWarning.innerHTML = warningMessage;
@@ -380,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
             neededGradeMessage.textContent = 'You cannot achieve your target grade with the current assessments.';
             
             // Calculate best possible grade (assuming 100% on final)
-            const maxPoints = currentWeightedSum + (examWeight * 1); // 1 = 100%
+            const maxPoints = currentWeightedSum + examWeight; // 100% on final
             const maxGrade = maxPoints / (totalWeight / 100);
             maxPossibleGrade.textContent = maxGrade.toFixed(2);
             bestPossibleGrade.classList.remove('hidden');
@@ -398,8 +461,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Save calculator state to local storage
     function saveToLocalStorage() {
+        // Store the capitalized version of the course name if it exists
+        const courseNameToSave = courseName.value.trim() ? capitalizeWords(courseName.value.trim()) : courseName.value;
+        
         const calculatorState = {
-            courseName: courseName.value,
+            courseName: courseNameToSave,
             finalExamWeight: finalExamWeight.value,
             targetGrade: targetGrade.value,
             assessments: finalAssessments,
@@ -424,7 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Update displays
                 updateCourseNameDisplay();
-                updateExamInfoDisplay();
                 
                 // Restore assessments
                 if (calculatorState.assessments && Array.isArray(calculatorState.assessments)) {
@@ -432,14 +497,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     renderFinalAssessments();
                 }
                 
-                // Restore form collapsed state
-                if (calculatorState.isFormCollapsed) {
-                    assessmentForm.classList.add('collapsed');
-                    assessmentFormToggle.innerHTML = '<i class="fas fa-chevron-down"></i> Show Assessments Form';
+                // Determine if Step 1 was already submitted
+                const hasSubmittedData = courseName.value.trim() && 
+                                        finalExamWeight.value && 
+                                        targetGrade.value;
+                
+                if (hasSubmittedData) {
+                    // Set as submitted if we have all required data
+                    isStepOneSubmitted = true;
+                    toggleStepOneEditMode(true);
+                    
+                    // Only after confirming submission status should we update these
+                    updateExamInfoDisplay();
+                    calculateNeededGrade();
+                    
+                    // Restore form collapsed state only if other conditions are met
+                    const examWeight = parseInt(finalExamWeight.value) || 0;
+                    const totalCurrentWeight = calculateTotalWeight(finalAssessments);
+                    const expectedAssessmentWeight = 100 - examWeight;
+                    
+                    if (totalCurrentWeight === expectedAssessmentWeight && finalAssessments.length > 0) {
+                        toggleAssessmentForm(true);
+                    } else {
+                        toggleAssessmentForm(false);
+                    }
+                } else {
+                    // Not submitted yet
+                    isStepOneSubmitted = false;
+                    toggleAssessmentForm(false);
                 }
                 
-                // Recalculate everything
-                calculateNeededGrade();
             } catch (error) {
                 console.error('Error loading saved data:', error);
                 // If there's an error, clear local storage
@@ -448,72 +535,54 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Add reset button functionality
-    const resetButton = document.getElementById('resetCalculator');
-    resetButton.addEventListener('click', function() {
-        if (confirm('Are you sure you want to reset the calculator? All your data will be cleared.')) {
+    // Reset calculator function
+    function resetCalculator() {
+        // Confirm reset
+        if (confirm('Are you sure you want to reset the calculator? This will clear all your data.')) {
+            // Clear localStorage
             localStorage.removeItem('gradeCalculatorState');
-            location.reload();
+            
+            // Reset all inputs and assessments
+            courseName.value = '';
+            finalExamWeight.value = '';
+            targetGrade.value = '';
+            finalAssessmentName.value = '';
+            finalCustomAssessment.value = '';
+            finalAssessmentWeight.value = '';
+            finalAssessmentGrade.value = '';
+            
+            // Clear assessments array and render
+            finalAssessments = [];
+            renderFinalAssessments();
+            
+            // Reset all displays
+            finalTotalWeightElement.textContent = '0';
+            finalCurrentGradeElement.textContent = '0';
+            neededGradeElement.textContent = '0';
+            neededGradeMessage.textContent = 'Enter your assessments and target grade to calculate.';
+            displayFinalExamWeight.textContent = '0';
+            displayTargetGrade.textContent = '0';
+            courseNameDisplay.style.display = 'none';
+            courseNameDisplay.textContent = 'Course Name';
+            bestPossibleGrade.classList.add('hidden');
+            
+            // Reset form state
+            toggleStepOneEditMode(false);
+            
+            // Toggle assessment form to default state
+            toggleAssessmentForm(false);
+            
+            // Clear warning message
+            finalWeightWarning.innerHTML = '';
+            finalWeightWarning.style.display = 'none';
+            
+            // Enable edits to fields
+            courseName.disabled = false;
+            finalExamWeight.disabled = false;
+            targetGrade.disabled = false;
+            
+            // Update button state
+            updateAddAssessmentButton();
         }
-    });
-    
-    // Initialize calculation on page load
-    calculateNeededGrade();
-    
-    // Save Results as PNG
-    saveAsPngBtn.addEventListener('click', function() {
-        if (typeof html2canvas !== 'function') {
-            alert('Screenshot library is still loading. Please try again in a moment.');
-            return;
-        }
-        
-        // First, check if there's any data to save
-        if (finalAssessments.length === 0 || !finalExamWeight.value || !targetGrade.value) {
-            alert('Please add some assessments and set your final exam weight and target grade before saving.');
-            return;
-        }
-        
-        // Show a loading state
-        saveAsPngBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-        saveAsPngBtn.disabled = true;
-        
-        // Create a timestamp for the filename
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        
-        // Apply special styles for screenshot
-        resultsSection.classList.add('screenshot-mode');
-        
-        // Take the screenshot after a small delay to ensure styles are applied
-        setTimeout(() => {
-            html2canvas(resultsSection, {
-                backgroundColor: '#ffffff',
-                scale: 2, // Higher quality
-                logging: false,
-                allowTaint: true,
-                useCORS: true
-            }).then(canvas => {
-                // Reset styles
-                resultsSection.classList.remove('screenshot-mode');
-                
-                // Convert to image and download
-                const image = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `grade-calculation-${timestamp}.png`;
-                link.href = image;
-                link.click();
-                
-                // Reset button
-                saveAsPngBtn.innerHTML = '<i class="fas fa-download"></i> Save as PNG';
-                saveAsPngBtn.disabled = false;
-            }).catch(err => {
-                console.error('Error generating screenshot:', err);
-                alert('Sorry, there was an error generating the screenshot. Please try again.');
-                
-                // Reset styles and button
-                resultsSection.classList.remove('screenshot-mode');
-                saveAsPngBtn.innerHTML = '<i class="fas fa-download"></i> Save as PNG';
-                saveAsPngBtn.disabled = false;
-            });
-        }, 100);
-    });
+    }
 }); 
