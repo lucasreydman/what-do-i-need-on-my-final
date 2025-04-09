@@ -1,0 +1,739 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+    padding-bottom: 30px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 600;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+h1 i {
+    margin-right: 10px;
+    color: #3498db;
+}
+
+h2 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: #34495e;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+h2 i, h3 i {
+    margin-right: 8px;
+    color: #3498db;
+}
+
+h3 {
+    margin-top: 12px;
+    margin-bottom: 10px;
+    color: #34495e;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.calculator-section {
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 5px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.assessment-form {
+    margin-bottom: 25px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    max-height: 1000px;
+}
+
+.assessment-form.collapsed {
+    max-height: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.assessment-form.collapsed .form-group,
+.assessment-form.collapsed h3,
+.assessment-form.collapsed .btn {
+    display: none;
+}
+
+.toggle-btn {
+    background-color: #f8fafc;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #3498db;
+    font-weight: 500;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+}
+
+.toggle-btn:hover {
+    background-color: #e8f4fc;
+}
+
+.toggle-btn i {
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+.assessment-form.collapsed .toggle-btn {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    justify-content: center;
+    background-color: transparent;
+}
+
+.final-exam-form {
+    margin-bottom: 25px;
+    padding: 22px;
+    background-color: #f1f7fd;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #3498db;
+}
+
+.form-group {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+label {
+    width: 140px;
+    font-weight: 500;
+    margin-right: 15px;
+    color: #445566;
+}
+
+.input-field {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 150px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    background-color: #fff;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.custom-input {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.btn {
+    margin-top: 15px;
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+.btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.results-section {
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.assessment-form.collapsed + .weight-warning + .results-section {
+    transform: translateY(-15px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+}
+
+.assessments-list {
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #445566;
+}
+
+tr:hover {
+    background-color: #f8fafc;
+}
+
+.percent-cell {
+    position: relative;
+}
+
+.percent-cell::after {
+    content: "%";
+    display: inline-block;
+    margin-left: 1px;
+    color: #445566;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 8px;
+    min-width: 160px;
+}
+
+.edit-btn, .delete-btn {
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 13px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-btn {
+    background-color: #3498db;
+}
+
+.edit-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-1px);
+}
+
+.edit-btn i, .delete-btn i {
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+.grade-display {
+    margin: 20px;
+    padding: 22px;
+    background-color: #fff;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-name-display {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 22px;
+}
+
+.assessment-form.collapsed ~ .results-section .grade-display {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.total-info, .exam-info {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+    font-size: 18px;
+    background-color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.stats-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 18px;
+    background-color: #f8fafc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.stats-info .info-item {
+    flex: 1 1 calc(25% - 10px);
+    min-width: 140px;
+    text-align: center;
+    padding: 8px;
+}
+
+.stats-info .info-item:nth-child(2),
+.stats-info .info-item:nth-child(3),
+.stats-info .info-item:nth-child(4) {
+    position: relative;
+}
+
+.stats-info .info-item:nth-child(2)::before,
+.stats-info .info-item:nth-child(3)::before,
+.stats-info .info-item:nth-child(4)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10%;
+    height: 80%;
+    width: 3px;
+    background-color: #3498db;
+    opacity: 0.3;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-item label {
+    width: auto;
+    margin-right: 0;
+    margin-bottom: 5px;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+.info-item span {
+    font-size: 24px;
+    font-weight: 600;
+    color: #34495e;
+    position: relative;
+    display: inline-block;
+}
+
+.info-item span::after {
+    content: "%";
+    display: inline-block;
+    font-size: 22px;
+    margin-left: 2px;
+}
+
+.needed-grade {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #eaf2f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.needed-grade h3 {
+    color: #2980b9;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.grade-result {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#neededGrade {
+    font-weight: bold;
+    font-size: 36px;
+    color: #2980b9;
+    display: inline-block;
+    margin: 0 5px;
+    position: relative;
+}
+
+#neededGrade::after {
+    content: "%";
+    display: inline-block;
+    font-size: 28px;
+    margin-left: 2px;
+}
+
+.weight-warning {
+    display: none;
+    padding: 15px 18px;
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    margin: 15px 20px 20px;
+    color: #856404;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+.weight-warning i {
+    margin-right: 8px;
+    color: #ffc107;
+}
+
+.weight-warning strong {
+    font-weight: 600;
+    color: #e67e22;
+}
+
+.quick-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.pass-btn {
+    padding: 12px 20px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 16px;
+    width: 100%;
+    text-align: center;
+}
+
+.pass-btn:hover {
+    background-color: #219653;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.best-grade {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e8f4fc;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.best-grade p {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.best-grade i {
+    color: #f39c12;
+    margin-right: 8px;
+}
+
+#maxPossibleGrade {
+    font-weight: bold;
+    color: #2980b9;
+    font-size: 20px;
+    display: inline-block;
+    position: relative;
+}
+
+#maxPossibleGrade::after {
+    content: "%";
+    display: inline-block;
+    font-size: 18px;
+    margin-left: 2px;
+}
+
+.reset-container {
+    display: none;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+
+.save-btn, .reset-btn {
+    padding: 10px 15px;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+}
+
+.save-btn {
+    background-color: #3498db;
+}
+
+.save-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reset-btn {
+    background-color: #e74c3c;
+    opacity: 0.9;
+}
+
+.reset-btn:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn i, .reset-btn i {
+    margin-right: 8px;
+}
+
+/* Calculator-like styling for forms */
+select, input[type="number"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+}
+
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* Only style the placeholder in the dropdown */
+select option[value=""] {
+    color: #999;
+}
+
+/* Style the select element only when showing placeholder */
+select {
+    color: #333;
+}
+
+select.placeholder-visible {
+    color: #888;
+}
+
+/* Remove the invalid/valid styling that affects all options */
+select:invalid, select:valid {
+    color: inherit;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        margin: 15px 10px;
+        border-radius: 10px;
+    }
+    
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    label {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    
+    .input-field {
+        width: 100%;
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+    
+    .total-info, .exam-info, .stats-info {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .stats-info .info-item {
+        width: 100%;
+        padding: 10px 0;
+    }
+    
+    .stats-info .info-item:nth-child(2)::before,
+    .stats-info .info-item:nth-child(3)::before,
+    .stats-info .info-item:nth-child(4)::before {
+        width: 0;
+        height: 0;
+    }
+    
+    .stats-info .info-item:nth-child(2),
+    .stats-info .info-item:nth-child(3),
+    .stats-info .info-item:nth-child(4) {
+        padding-top: 15px;
+        border-top: 2px solid rgba(52, 152, 219, 0.2);
+    }
+    
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: 10px 12px;
+    }
+    
+    .btn, .pass-btn {
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+    
+    #neededGrade {
+        font-size: 30px;
+    }
+    
+    .assessment-form, .final-exam-form, .assessments-list, .grade-display {
+        margin: 15px 10px;
+    }
+    
+    .calculator-section, .results-section {
+        padding: 0;
+    }
+    
+    .actions-cell {
+        flex-direction: column;
+        gap: 5px;
+        min-width: auto;
+    }
+    
+    .edit-btn, .delete-btn {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .save-btn, .reset-btn {
+        width: 100%;
+    }
+}
+
+/* Screenshot mode styles */
+.screenshot-mode {
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.screenshot-mode .course-name-display {
+    font-size: 26px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #3498db;
+}
+
+.screenshot-mode .assessments-list {
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.screenshot-mode .grade-display {
+    margin: 0;
+}
+
+.screenshot-mode .action-buttons {
+    display: none;
+}
+
+.screenshot-mode::after {
+    content: 'Created by: Lucas Reydman';
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #888;
+} 
