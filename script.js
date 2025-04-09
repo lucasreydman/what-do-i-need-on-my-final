@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isStepOneSubmitted = false;
     let finalAssessments = [];
     let isEditingMode = false;
+    let isInitialLoad = true; // Flag to track initial page load
     
     // Set course name as required
     courseName.setAttribute('required', 'true');
@@ -43,6 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSelectPlaceholderStyle(finalAssessmentName);
     updateAddAssessmentButton();
     checkWeightStatusAndToggleForm();
+    
+    // After initial setup, set the flag to false
+    setTimeout(() => {
+        isInitialLoad = false;
+    }, 100);
     
     // Event listeners
     resetBtn.addEventListener('click', resetCalculator);
@@ -188,16 +194,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Collapse
             assessmentForm.classList.add('collapsed');
             
-            // Scroll to results if not in editing mode
-            if (!isEditingMode) {
+            // Scroll to results if not in editing mode and not on initial page load
+            if (!isEditingMode && !isInitialLoad) {
                 gradeDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         } else {
             // Expand
             assessmentForm.classList.remove('collapsed');
             
-            // Scroll to the form
-            assessmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Scroll to the form only if not on initial page load
+            if (!isInitialLoad) {
+                assessmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
     }
     
@@ -366,8 +374,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove the assessment from the array
         finalAssessments.splice(index, 1);
         
-        // Scroll to the form and focus on the first field
-        assessmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Scroll to the form and focus on the first field only if not during initial load
+        if (!isInitialLoad) {
+            assessmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
         
         // Update UI
         renderFinalAssessments();
@@ -511,20 +521,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateExamInfoDisplay();
                     calculateNeededGrade();
                     
-                    // Restore form collapsed state only if other conditions are met
+                    // Restore form collapsed state only if other conditions are met,
+                    // but don't scroll during initial load
                     const examWeight = parseInt(finalExamWeight.value) || 0;
                     const totalCurrentWeight = calculateTotalWeight(finalAssessments);
                     const expectedAssessmentWeight = 100 - examWeight;
                     
                     if (totalCurrentWeight === expectedAssessmentWeight && finalAssessments.length > 0) {
-                        toggleAssessmentForm(true);
+                        // Just set the class directly during initial load to prevent scrolling
+                        if (isInitialLoad) {
+                            assessmentForm.classList.add('collapsed');
+                        } else {
+                            toggleAssessmentForm(true);
+                        }
                     } else {
-                        toggleAssessmentForm(false);
+                        assessmentForm.classList.remove('collapsed');
                     }
                 } else {
                     // Not submitted yet
                     isStepOneSubmitted = false;
-                    toggleAssessmentForm(false);
+                    assessmentForm.classList.remove('collapsed');
                 }
                 
             } catch (error) {
