@@ -343,8 +343,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="percent-cell">${assessment.grade}</td>
                 <td class="percent-cell">${assessment.weighted.toFixed(2)}</td>
                 <td class="actions-cell">
-                    <button class="edit-btn" data-index="${index}"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="delete-btn" data-index="${index}"><i class="fas fa-trash"></i> Delete</button>
+                    <button class="edit-btn mobile-btn" data-index="${index}"><i class="fas fa-edit"></i> <span class="btn-text">Edit</span></button>
+                    <button class="delete-btn mobile-btn" data-index="${index}"><i class="fas fa-trash"></i> <span class="btn-text">Delete</span></button>
                 </td>
             `;
             

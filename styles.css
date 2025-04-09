@@ -190,7 +190,7 @@ label {
     margin: 20px;
     background-color: #fff;
     border-radius: 10px;
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -203,6 +203,7 @@ th, td {
     padding: 14px 18px;
     text-align: left;
     border-bottom: 1px solid #eee;
+    vertical-align: middle;
 }
 
 th {
@@ -826,24 +827,66 @@ input:required {
         padding: 6px 12px;
     }
     
+    /* Improve table layout on mobile */
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    
     th, td {
-        padding: 8px 6px;
-        font-size: 13px;
+        padding: 8px 4px;
+        font-size: 12px;
+        word-break: break-word;
+    }
+    
+    /* Adjust column widths for mobile */
+    th:nth-child(1), td:nth-child(1) {
+        width: 25%;
+    }
+    
+    th:nth-child(2), td:nth-child(2),
+    th:nth-child(3), td:nth-child(3),
+    th:nth-child(4), td:nth-child(4) {
+        width: 15%;
+    }
+    
+    th:nth-child(5), td:nth-child(5) {
+        width: 30%;
+    }
+    
+    /* Improved table responsiveness */
+    .actions-header {
+        text-align: center;
+    }
+    
+    /* Better vertical alignment of table cells */
+    td {
+        vertical-align: middle;
     }
     
     .actions-cell {
         min-width: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 2px;
+        padding-top: 6px;
+        padding-bottom: 6px;
     }
     
     .edit-btn, .delete-btn {
-        font-size: 12px;
+        font-size: 11px;
+        padding: 4px 3px;
+        flex: 1;
+        white-space: nowrap;
     }
     
     .edit-btn i, .delete-btn i {
         font-size: 10px;
-        margin-right: 3px;
+        margin-right: 2px;
     }
     
+    /* Other mobile styles */
     #neededGrade {
         font-size: 24px;
     }
@@ -867,6 +910,47 @@ input:required {
     
     .reset-btn, .github-button {
         width: 100%;
+    }
+    
+    .assessments-list {
+        margin: 10px;
+        overflow-x: auto;
+    }
+}
+
+/* Very small screens - icon-only buttons */
+@media (max-width: 375px) {
+    .btn-text {
+        display: none;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        margin-right: 0;
+        font-size: 14px;
+    }
+    
+    .edit-btn, .delete-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 4px;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 360px) {
+    .edit-btn, .delete-btn {
+        font-size: 10px;
+        padding: 4px 2px;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        margin-right: 1px;
+    }
+    
+    th, td {
+        padding: 6px 2px;
+        font-size: 11px;
     }
 }
 
