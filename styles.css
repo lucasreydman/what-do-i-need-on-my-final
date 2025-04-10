@@ -14,11 +14,13 @@ body {
 
 .container {
     max-width: 800px;
+    width: 100%;
     margin: 30px auto;
     padding: 25px;
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 h1 {
@@ -68,6 +70,8 @@ h3 {
     padding: 5px;
     margin-bottom: 25px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    overflow: hidden;
 }
 
 .assessment-form {
@@ -193,6 +197,8 @@ label {
     padding: 5px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    overflow: hidden;
 }
 
 .assessment-form.collapsed + .weight-warning + .results-section {
@@ -204,8 +210,17 @@ label {
     margin: 20px;
     background-color: #fff;
     border-radius: 10px;
-    overflow-x: auto;
+    overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Ensure table cell content wraps properly */
+td {
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Table layout and spacing */
@@ -229,6 +244,10 @@ th {
     text-align: center;
 }
 
+.actions-header {
+    text-align: center !important;
+}
+
 th:first-child {
     text-align: left;
 }
@@ -249,6 +268,7 @@ th:nth-child(4), td:nth-child(4) {
 th:nth-child(5), td:nth-child(5) {
     width: 20%;
     text-align: center;
+    padding: 5px;
 }
 
 tr:hover {
@@ -265,50 +285,6 @@ tr:hover {
     display: inline-block;
     margin-left: 1px;
     color: #445566;
-}
-
-.actions-cell {
-    display: flex;
-    gap: 8px;
-    min-width: 160px;
-}
-
-.edit-btn, .delete-btn {
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    font-size: 13px;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.edit-btn {
-    background-color: #3498db;
-}
-
-.edit-btn:hover {
-    background-color: #2980b9;
-    transform: translateY(-1px);
-}
-
-.delete-btn {
-    background-color: #e74c3c;
-}
-
-.delete-btn:hover {
-    background-color: #c0392b;
-    transform: translateY(-1px);
-}
-
-.edit-btn i, .delete-btn i {
-    margin-right: 5px;
-    font-size: 12px;
 }
 
 .grade-display {
@@ -808,18 +784,19 @@ input:required {
         width: 22%;
     }
     
-    /* Stack action buttons vertically on mobile */
+    /* Mobile actions styling */
     .actions-cell {
-        display: flex;
         flex-direction: column;
-        gap: 4px;
-        padding: 8px 2px;
+        gap: 6px;
     }
     
     .edit-btn, .delete-btn {
-        font-size: 11px;
-        padding: 5px 2px;
-        width: 100%;
+        width: 36px;
+        height: 36px;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        font-size: 16px;
     }
     
     .btn {
@@ -864,9 +841,17 @@ input:required {
         font-size: 14px;
     }
     
-    .edit-btn, .delete-btn {
-        justify-content: center;
-        padding: 6px 0;
+    .assessments-list {
+        margin: 10px;
+        overflow: hidden;
+    }
+    
+    /* Ensure full width container on mobile */
+    .container, .calculator-section, .results-section {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 }
 
@@ -932,27 +917,25 @@ input:required {
     
     th:nth-child(5), td:nth-child(5) {
         width: 21%;
+        min-width: auto;
     }
     
     .actions-cell {
-        padding: 6px 2px;
-        gap: 3px;
+        padding: 4px 0;
     }
     
+    /* Make buttons more compact */
     .edit-btn, .delete-btn {
-        padding: 4px 1px;
-        font-size: 10px;
+        width: 32px;
+        height: 32px;
     }
     
-    /* Make icons smaller */
     .edit-btn i, .delete-btn i {
-        font-size: 10px;
-        margin-right: 2px;
+        font-size: 14px;
     }
     
-    /* Adjust the actions column width */
     th:nth-child(5), td:nth-child(5) {
-        width: 16%;
+        width: 18%;
         min-width: 45px;
     }
     
@@ -983,8 +966,8 @@ input:required {
     }
     
     .assessments-list {
-        margin: 10px;
-        overflow-x: auto;
+        margin: 5px;
+        border-radius: 8px;
     }
     
     /* Specific styling for the Weighted column on mobile */
@@ -1002,7 +985,7 @@ input:required {
     th[data-full="Assessment"]::before,
     th[data-full="Weight"]::before,
     th[data-full="Grade"]::before,
-    th[data-full="Weighted"]::before,
+    th[data-full="W.G."]::before,
     th[data-full="Actions"]::before {
         content: none;
     }
@@ -1010,7 +993,7 @@ input:required {
     th[data-full="Assessment"] span, 
     th[data-full="Weight"] span, 
     th[data-full="Grade"] span, 
-    th[data-full="Weighted"] span,
+    th[data-full="W.G."] span,
     th[data-full="Actions"] span {
         display: inline;
     }
@@ -1032,7 +1015,7 @@ input:required {
     
     /* Button styling */
     .edit-btn i, .delete-btn i {
-        font-size: 12px;
+        font-size: 14px;
     }
     
     .edit-btn, .delete-btn {
@@ -1051,22 +1034,6 @@ input:required {
         font-size: 10px;
     }
     
-    .edit-btn, .delete-btn {
-        padding: 3px 1px;
-    }
-    
-    .edit-btn i, .delete-btn i {
-        font-size: 11px;
-    }
-    
-    .edit-btn, .delete-btn {
-        padding: 4px 0;
-    }
-    
-    .btn-text {
-        display: none;
-    }
-    
     th:nth-child(1) {
         font-size: 11px;
     }
@@ -1080,16 +1047,33 @@ input:required {
         padding: 6px 1px;
     }
     
+    th:nth-child(5), td:nth-child(5) {
+        min-width: 65px;
+    }
+    
     th[data-full="Assessment"] span, 
     th[data-full="Weight"] span, 
     th[data-full="Grade"] span, 
-    th[data-full="Weighted"] span,
+    th[data-full="W.G."] span,
     th[data-full="Actions"] span {
         font-size: 9px;
     }
     
     th {
         padding: 6px 1px;
+    }
+    
+    .actions-cell {
+        gap: 4px;
+    }
+    
+    .edit-btn, .delete-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        font-size: 12px;
     }
 }
 
@@ -1118,4 +1102,99 @@ input:required {
 
 .submit-btn, .btn, .reset-btn, .github-button {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Actions styling */
+.actions-column {
+    padding: 0;
+    text-align: center;
+}
+
+.actions-cell {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    margin: 0 auto;
+}
+
+/* Action buttons */
+.edit-btn, .delete-btn {
+    width: 40px;
+    height: 40px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-btn i, .delete-btn i {
+    font-size: 18px;
+}
+
+.edit-btn {
+    background-color: #3498db;
+}
+
+.edit-btn:hover {
+    background-color: #2980b9;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    /* Mobile actions styling */
+    .actions-cell {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .edit-btn, .delete-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-btn, .delete-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 350px) {
+    .actions-cell {
+        gap: 4px;
+    }
+    
+    .edit-btn, .delete-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        font-size: 12px;
+    }
 } 

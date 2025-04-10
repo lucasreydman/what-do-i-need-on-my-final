@@ -383,9 +383,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="percent-cell">${formatNumber(assessment.weight)}</td>
                 <td class="percent-cell">${formatNumber(assessment.grade)}</td>
                 <td class="percent-cell">${formatNumber(assessment.weighted)}</td>
-                <td class="actions-cell">
-                    <button class="edit-btn mobile-btn" data-index="${index}"><i class="fas fa-edit"></i> <span class="btn-text">Edit</span></button>
-                    <button class="delete-btn mobile-btn" data-index="${index}"><i class="fas fa-trash"></i> <span class="btn-text">Delete</span></button>
+                <td class="actions-column">
+                    <div class="actions-cell">
+                        <button class="edit-btn" data-index="${index}"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="delete-btn" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
+                    </div>
                 </td>
             `;
             
