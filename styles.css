@@ -208,9 +208,11 @@ label {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* Table layout and spacing */
 table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 th, td {
@@ -224,6 +226,29 @@ th {
     background-color: #f8fafc;
     font-weight: 600;
     color: #445566;
+    text-align: center;
+}
+
+th:first-child {
+    text-align: left;
+}
+
+/* Column width distributions */
+th:nth-child(1), td:nth-child(1) {
+    width: 35%;
+    text-align: left;
+}
+
+th:nth-child(2), td:nth-child(2),
+th:nth-child(3), td:nth-child(3),
+th:nth-child(4), td:nth-child(4) {
+    width: 15%;
+    text-align: center;
+}
+
+th:nth-child(5), td:nth-child(5) {
+    width: 20%;
+    text-align: center;
 }
 
 tr:hover {
@@ -232,6 +257,7 @@ tr:hover {
 
 .percent-cell {
     position: relative;
+    text-align: center;
 }
 
 .percent-cell::after {
@@ -761,7 +787,39 @@ input:required {
     }
     
     th, td {
-        padding: 10px;
+        padding: 10px 5px;
+        word-break: break-word;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+    }
+    
+    /* Mobile column widths */
+    th:nth-child(1), td:nth-child(1) {
+        width: 30%;
+    }
+    
+    th:nth-child(2), td:nth-child(2), 
+    th:nth-child(3), td:nth-child(3),
+    th:nth-child(4), td:nth-child(4) {
+        width: 16%;
+    }
+    
+    th:nth-child(5), td:nth-child(5) {
+        width: 22%;
+    }
+    
+    /* Stack action buttons vertically on mobile */
+    .actions-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px 2px;
+    }
+    
+    .edit-btn, .delete-btn {
+        font-size: 11px;
+        padding: 5px 2px;
+        width: 100%;
     }
     
     .btn {
@@ -780,16 +838,6 @@ input:required {
         padding: 3px;
     }
     
-    .actions-cell {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .edit-btn, .delete-btn {
-        padding: 5px;
-    }
-    
     .action-buttons {
         flex-direction: column;
         align-items: center;
@@ -804,6 +852,21 @@ input:required {
     .title-icon {
         width: 36px;
         height: 36px;
+    }
+    
+    /* Hide button text on mobile, show only icons */
+    .btn-text {
+        display: none;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        margin-right: 0;
+        font-size: 14px;
+    }
+    
+    .edit-btn, .delete-btn {
+        justify-content: center;
+        padding: 6px 0;
     }
 }
 
@@ -837,63 +900,60 @@ input:required {
         padding: 6px 12px;
     }
     
-    /* Improve table layout on mobile */
+    /* Improve table layout on very small screens */
     table {
         table-layout: fixed;
-        width: 100%;
+        font-size: 12px;
     }
     
     th, td {
-        padding: 8px 4px;
+        padding: 8px 3px;
+    }
+    
+    /* Adjust table header text for small screens */
+    th:nth-child(1) {
         font-size: 12px;
-        word-break: break-word;
     }
     
-    /* Adjust column widths for mobile */
+    th:nth-child(2), th:nth-child(3), th:nth-child(4) {
+        font-size: 11px;
+    }
+    
+    /* Better responsive column sizes */
     th:nth-child(1), td:nth-child(1) {
-        width: 25%;
+        width: 28%;
     }
     
-    th:nth-child(2), td:nth-child(2),
+    th:nth-child(2), td:nth-child(2), 
     th:nth-child(3), td:nth-child(3),
     th:nth-child(4), td:nth-child(4) {
-        width: 15%;
+        width: 17%;
     }
     
     th:nth-child(5), td:nth-child(5) {
-        width: 30%;
-    }
-    
-    /* Improved table responsiveness */
-    .actions-header {
-        text-align: center;
-    }
-    
-    /* Better vertical alignment of table cells */
-    td {
-        vertical-align: middle;
+        width: 21%;
     }
     
     .actions-cell {
-        min-width: auto;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 2px;
-        padding-top: 6px;
-        padding-bottom: 6px;
+        padding: 6px 2px;
+        gap: 3px;
     }
     
     .edit-btn, .delete-btn {
-        font-size: 11px;
-        padding: 4px 3px;
-        flex: 1;
-        white-space: nowrap;
+        padding: 4px 1px;
+        font-size: 10px;
     }
     
+    /* Make icons smaller */
     .edit-btn i, .delete-btn i {
         font-size: 10px;
         margin-right: 2px;
+    }
+    
+    /* Adjust the actions column width */
+    th:nth-child(5), td:nth-child(5) {
+        width: 16%;
+        min-width: 45px;
     }
     
     /* Other mobile styles */
@@ -926,41 +986,110 @@ input:required {
         margin: 10px;
         overflow-x: auto;
     }
+    
+    /* Specific styling for the Weighted column on mobile */
+    th:nth-child(4) {
+        white-space: nowrap;
+        font-size: 11px;
+    }
+    
+    /* Other table header adjustments */
+    th {
+        padding: 10px 3px;
+    }
+    
+    /* Restore full column titles but make them small */
+    th[data-full="Assessment"]::before,
+    th[data-full="Weight"]::before,
+    th[data-full="Grade"]::before,
+    th[data-full="Weighted"]::before,
+    th[data-full="Actions"]::before {
+        content: none;
+    }
+    
+    th[data-full="Assessment"] span, 
+    th[data-full="Weight"] span, 
+    th[data-full="Grade"] span, 
+    th[data-full="Weighted"] span,
+    th[data-full="Actions"] span {
+        display: inline;
+    }
+    
+    th {
+        padding: 8px 2px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+    
+    /* Column-specific styling */
+    th:nth-child(1) {
+        font-size: 10px;
+    }
+    
+    th:nth-child(2), th:nth-child(3), th:nth-child(4) {
+        font-size: 10px;
+    }
+    
+    /* Button styling */
+    .edit-btn i, .delete-btn i {
+        font-size: 12px;
+    }
+    
+    .edit-btn, .delete-btn {
+        padding: 5px 0;
+    }
 }
 
-/* Very small screens - icon-only buttons */
-@media (max-width: 375px) {
+/* Very small screens - specialized adjustments */
+@media (max-width: 350px) {
+    th, td {
+        padding: 6px 2px;
+        font-size: 10px;
+    }
+    
+    .actions-header {
+        font-size: 10px;
+    }
+    
+    .edit-btn, .delete-btn {
+        padding: 3px 1px;
+    }
+    
+    .edit-btn i, .delete-btn i {
+        font-size: 11px;
+    }
+    
+    .edit-btn, .delete-btn {
+        padding: 4px 0;
+    }
+    
     .btn-text {
         display: none;
     }
     
-    .edit-btn i, .delete-btn i {
-        margin-right: 0;
-        font-size: 14px;
-    }
-    
-    .edit-btn, .delete-btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 8px 4px;
-    }
-}
-
-/* Extra small mobile devices */
-@media (max-width: 360px) {
-    .edit-btn, .delete-btn {
-        font-size: 10px;
-        padding: 4px 2px;
-    }
-    
-    .edit-btn i, .delete-btn i {
-        margin-right: 1px;
-    }
-    
-    th, td {
-        padding: 6px 2px;
+    th:nth-child(1) {
         font-size: 11px;
+    }
+    
+    th:nth-child(2), th:nth-child(3), th:nth-child(4) {
+        font-size: 9px;
+    }
+    
+    th:nth-child(4) {
+        font-size: 10px;
+        padding: 6px 1px;
+    }
+    
+    th[data-full="Assessment"] span, 
+    th[data-full="Weight"] span, 
+    th[data-full="Grade"] span, 
+    th[data-full="Weighted"] span,
+    th[data-full="Actions"] span {
+        font-size: 9px;
+    }
+    
+    th {
+        padding: 6px 1px;
     }
 }
 
