@@ -85,17 +85,31 @@ h3 {
 
 .assessment-form.collapsed {
     max-height: 50px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 12px 15px;
     overflow: hidden;
     margin-bottom: 15px;
     opacity: 0.9;
+    display: flex;
+    align-items: center;
 }
 
 .assessment-form.collapsed .form-group,
 .assessment-form.collapsed h3,
 .assessment-form.collapsed .btn {
     display: none;
+}
+
+.assessment-form.collapsed .step-label {
+    margin: 0;
+    padding: 0;
+    height: auto;
+    overflow: visible;
+    width: 100%;
+    text-align: left;
+    background-color: transparent;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
 }
 
 .final-exam-form {
@@ -584,10 +598,6 @@ input:required {
 
 .assessment-form .step-label i {
     color: #2ecc71;
-}
-
-.assessment-form.collapsed .step-label {
-    margin-bottom: 0;
 }
 
 .submit-btn {

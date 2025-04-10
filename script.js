@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const finalExamWeight = document.getElementById('finalExamWeight');
     const targetGrade = document.getElementById('targetGrade');
     const finalAssessmentName = document.getElementById('finalAssessmentName');
-    const finalCustomAssessment = document.getElementById('finalCustomAssessment');
     const finalAssessmentWeight = document.getElementById('finalAssessmentWeight');
     const finalAssessmentGrade = document.getElementById('finalAssessmentGrade');
     const addFinalAssessmentBtn = document.getElementById('addFinalAssessment');
@@ -98,13 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle course name changes
     courseName.addEventListener('input', updateCourseNameDisplay);
     
-    // Handle custom assessment name input and placeholder styling
+    // Handle placeholder styling
     finalAssessmentName.addEventListener('change', function() {
-        if (this.value === 'custom') {
-            finalCustomAssessment.classList.remove('hidden');
-        } else {
-            finalCustomAssessment.classList.add('hidden');
-        }
         updateSelectPlaceholderStyle(this);
     });
     
@@ -297,12 +291,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function getAssessmentName(select, customInput) {
-        return select.value === 'custom' ? customInput.value.trim() : select.value;
+    function getAssessmentName(select) {
+        return select.value;
     }
     
     function addFinalAssessment() {
-        const name = getAssessmentName(finalAssessmentName, finalCustomAssessment);
+        const name = getAssessmentName(finalAssessmentName);
         const weightValue = finalAssessmentWeight.value.trim();
         const gradeValue = finalAssessmentGrade.value.trim();
         
@@ -342,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
         isEditingMode = false;
         renderFinalAssessments();
         calculateNeededGrade();
-        resetForm(finalAssessmentName, finalCustomAssessment, finalAssessmentWeight, finalAssessmentGrade);
+        resetForm(finalAssessmentName, finalAssessmentWeight, finalAssessmentGrade);
         saveToLocalStorage();
         
         // Check if we should collapse the form
@@ -363,15 +357,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function resetForm(nameSelect, customInput, weightInput, gradeInput) {
+    function resetForm(nameSelect, weightInput, gradeInput) {
         nameSelect.value = "";
-        customInput.value = '';
-        customInput.classList.add('hidden');
         weightInput.value = '';
         gradeInput.value = '';
         updateSelectPlaceholderStyle(nameSelect);
     }
     
+    // Format number to remove trailing zeros
+    function formatNumber(number) {
+        // Convert to string with 2 decimal places
+        const formatted = parseFloat(number).toFixed(2);
+        // Remove trailing zeros and trailing decimal point if needed
+        return parseFloat(formatted).toString();
+    }
+
     function renderFinalAssessments() {
         finalAssessmentsList.innerHTML = '';
         
@@ -380,9 +380,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             row.innerHTML = `
                 <td>${assessment.name}</td>
-                <td class="percent-cell">${assessment.weight.toFixed(2)}</td>
-                <td class="percent-cell">${assessment.grade.toFixed(2)}</td>
-                <td class="percent-cell">${assessment.weighted.toFixed(2)}</td>
+                <td class="percent-cell">${formatNumber(assessment.weight)}</td>
+                <td class="percent-cell">${formatNumber(assessment.grade)}</td>
+                <td class="percent-cell">${formatNumber(assessment.weighted)}</td>
                 <td class="actions-cell">
                     <button class="edit-btn mobile-btn" data-index="${index}"><i class="fas fa-edit"></i> <span class="btn-text">Edit</span></button>
                     <button class="delete-btn mobile-btn" data-index="${index}"><i class="fas fa-trash"></i> <span class="btn-text">Delete</span></button>
@@ -428,18 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleAssessmentForm(false);
         
         // Populate form with assessment data
-        if (assessment.name === 'Test' || assessment.name === 'Midterm Exam' || 
-            assessment.name === 'Quiz' || assessment.name === 'Lab' || 
-            assessment.name === 'Project' || assessment.name === 'Assignment' || 
-            assessment.name === 'Essay') {
-            finalAssessmentName.value = assessment.name;
-            finalCustomAssessment.classList.add('hidden');
-        } else {
-            finalAssessmentName.value = 'custom';
-            finalCustomAssessment.value = assessment.name;
-            finalCustomAssessment.classList.remove('hidden');
-        }
-        
+        finalAssessmentName.value = assessment.name;
         updateSelectPlaceholderStyle(finalAssessmentName);
         finalAssessmentWeight.value = assessment.weight;
         finalAssessmentGrade.value = assessment.grade;
@@ -476,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalCurrentWeight = parseFloat(calculateTotalWeight(finalAssessments).toFixed(2));
         const currentWeightedSum = parseFloat(calculateWeightedSum(finalAssessments).toFixed(2));
         
-        finalTotalWeightElement.textContent = totalCurrentWeight.toFixed(2);
+        finalTotalWeightElement.textContent = formatNumber(totalCurrentWeight);
         bestPossibleGrade.classList.add('hidden');
         
         // Update the exam info display
@@ -484,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Validate inputs
         if (examWeight === 0 || desiredGrade === 0) {
-            neededGradeElement.textContent = '0.00';
+            neededGradeElement.textContent = '0';
             neededGradeMessage.textContent = 'Please enter your final exam weight and target grade.';
             return;
         }
@@ -499,9 +488,9 @@ document.addEventListener('DOMContentLoaded', function() {
             let warningMessage = '';
             
             if (difference > 0) {
-                warningMessage = `<i class="fas fa-exclamation-triangle"></i> Your current total weight is <strong>${totalCurrentWeight}%</strong> but should equal <strong>${expectedAssessmentWeight}%</strong>. You need to add <strong>${difference}%</strong> more weight.`;
+                warningMessage = `<i class="fas fa-exclamation-triangle"></i> Your current total weight is <strong>${formatNumber(totalCurrentWeight)}%</strong> but should equal <strong>${formatNumber(expectedAssessmentWeight)}%</strong>. You need to add <strong>${formatNumber(difference)}%</strong> more weight.`;
             } else {
-                warningMessage = `<i class="fas fa-exclamation-triangle"></i> Your current total weight is <strong>${totalCurrentWeight}%</strong> but should equal <strong>${expectedAssessmentWeight}%</strong>. You need to remove <strong>${Math.abs(difference)}%</strong> weight.`;
+                warningMessage = `<i class="fas fa-exclamation-triangle"></i> Your current total weight is <strong>${formatNumber(totalCurrentWeight)}%</strong> but should equal <strong>${formatNumber(expectedAssessmentWeight)}%</strong>. You need to remove <strong>${formatNumber(Math.abs(difference))}%</strong> weight.`;
             }
             
             finalWeightWarning.innerHTML = warningMessage;
@@ -511,11 +500,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (totalCurrentWeight === 0) {
-            finalCurrentGradeElement.textContent = '0.00';
+            finalCurrentGradeElement.textContent = '0';
         } else {
             // Calculate current grade based on existing assessments
             const currentGrade = currentWeightedSum / (totalCurrentWeight / 100);
-            finalCurrentGradeElement.textContent = currentGrade.toFixed(2);
+            finalCurrentGradeElement.textContent = formatNumber(currentGrade);
         }
         
         // Calculate needed grade
@@ -523,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let neededGrade = parseFloat(((pointsNeeded / examWeight) * 100).toFixed(2));
         
         if (neededGrade < 0) {
-            neededGradeElement.textContent = '0.00';
+            neededGradeElement.textContent = '0';
             neededGradeMessage.textContent = 'You have already achieved your target grade!';
         } else if (neededGrade > 100) {
             neededGradeElement.textContent = 'Impossible';
@@ -532,10 +521,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Calculate best possible grade (assuming 100% on final)
             const maxPoints = currentWeightedSum + examWeight; // 100% on final
             const maxGrade = maxPoints / (totalWeight / 100);
-            maxPossibleGrade.textContent = maxGrade.toFixed(2);
+            maxPossibleGrade.textContent = formatNumber(maxGrade);
             bestPossibleGrade.classList.remove('hidden');
         } else {
-            neededGradeElement.textContent = neededGrade.toFixed(2);
+            neededGradeElement.textContent = formatNumber(neededGrade);
             neededGradeMessage.textContent = '';
         }
     }
@@ -545,19 +534,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const examWeightValue = finalExamWeight.value.trim();
         const targetGradeValue = targetGrade.value.trim();
         
-        // Format with 2 decimal places
+        // Format values
         if (examWeightValue) {
             const value = parseFloat(examWeightValue);
-            displayFinalExamWeight.textContent = value.toFixed(2);
+            displayFinalExamWeight.textContent = formatNumber(value);
         } else {
-            displayFinalExamWeight.textContent = '0.00';
+            displayFinalExamWeight.textContent = '0';
         }
         
         if (targetGradeValue) {
             const value = parseFloat(targetGradeValue);
-            displayTargetGrade.textContent = value.toFixed(2);
+            displayTargetGrade.textContent = formatNumber(value);
         } else {
-            displayTargetGrade.textContent = '0.00';
+            displayTargetGrade.textContent = '0';
         }
     }
     
@@ -662,7 +651,6 @@ document.addEventListener('DOMContentLoaded', function() {
             finalExamWeight.value = '';
             targetGrade.value = '';
             finalAssessmentName.value = '';
-            finalCustomAssessment.value = '';
             finalAssessmentWeight.value = '';
             finalAssessmentGrade.value = '';
             
@@ -671,12 +659,12 @@ document.addEventListener('DOMContentLoaded', function() {
             renderFinalAssessments();
             
             // Reset all displays
-            finalTotalWeightElement.textContent = '0.00';
-            finalCurrentGradeElement.textContent = '0.00';
-            neededGradeElement.textContent = '0.00';
+            finalTotalWeightElement.textContent = '0';
+            finalCurrentGradeElement.textContent = '0';
+            neededGradeElement.textContent = '0';
             neededGradeMessage.textContent = 'Enter your assessments and target grade to calculate.';
-            displayFinalExamWeight.textContent = '0.00';
-            displayTargetGrade.textContent = '0.00';
+            displayFinalExamWeight.textContent = '0';
+            displayTargetGrade.textContent = '0';
             courseNameDisplay.style.display = 'none';
             courseNameDisplay.textContent = 'Course Name';
             bestPossibleGrade.classList.add('hidden');
