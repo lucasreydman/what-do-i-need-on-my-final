@@ -1197,4 +1197,103 @@ input:required {
     .edit-btn i, .delete-btn i {
         font-size: 12px;
     }
+}
+
+/* Navigation links */
+.nav-links {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    padding: 10px 15px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    color: #34495e;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.nav-link i {
+    margin-right: 8px;
+    color: #3498db;
+}
+
+.nav-link:hover {
+    background-color: #e6f3fe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.nav-link.active i {
+    color: white;
+}
+
+/* Letter grade styling */
+.letter-grade {
+    font-size: 24px;
+    margin: 15px 0;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+#letterGrade {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2980b9;
+}
+
+#gradePoint {
+    font-size: 24px;
+    color: #7f8c8d;
+}
+
+/* Custom input group */
+.custom-input-group {
+    transition: all 0.3s ease;
+}
+
+.custom-input-group.hidden {
+    display: none;
+}
+
+/* Responsive adjustments for nav links */
+@media (max-width: 768px) {
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .nav-link {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+
+/* Disabled button state */
+.btn.disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn.disabled:hover {
+    background-color: #95a5a6;
+    transform: none;
+    box-shadow: none;
 } 

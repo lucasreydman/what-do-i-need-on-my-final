@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculate what grade you need on your final exam to achieve your target grade.">
+    <meta name="description" content="Calculate your final grade based on your assessments.">
     <title>wdinomf?</title>
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
@@ -15,17 +15,17 @@
 <body>
     <div class="container">
         <h1>
-            <img src="favicon.png" class="title-icon" alt="Calculator icon">what do i need on my final?
+            <img src="favicon.png" class="title-icon" alt="Calculator icon">calculate final grade!
         </h1>
         
         <div class="nav-links">
-            <a href="index.html" class="nav-link active"><i class="fas fa-calculator"></i>wdinomf?</a>
-            <a href="final-grade.html" class="nav-link"><i class="fas fa-graduation-cap"></i>calculate final grade!</a>
+            <a href="index.html" class="nav-link"><i class="fas fa-calculator"></i>wdinomf?</a>
+            <a href="final-grade.html" class="nav-link active"><i class="fas fa-graduation-cap"></i>calculate final grade!</a>
         </div>
         
         <div class="calculator-section">
             <div class="final-exam-form">
-                <div class="step-label"><i class="fas fa-book"></i> Step 1: Enter Final Exam Information</div>
+                <div class="step-label"><i class="fas fa-book"></i> Step 1: Enter Completed Final Exam Information</div>
                 <div class="form-group">
                     <label for="courseName">Course Name:</label>
                     <input type="text" id="courseName" class="input-field" required>
@@ -37,8 +37,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="targetGrade">Final Target Grade:</label>
-                    <input type="text" id="targetGrade" class="input-field" placeholder="0-100" required>
+                    <label for="finalExamGrade">Final Exam Grade:</label>
+                    <input type="text" id="finalExamGrade" class="input-field" placeholder="0-100" required>
                 </div>
                 
                 <button id="submitStepOne" class="submit-btn"><i class="fas fa-check"></i> Submit Info</button>
@@ -47,8 +47,8 @@
             <div class="assessment-form">
                 <div class="step-label"><i class="fas fa-list-check"></i> Step 2: Add Completed Assessments</div>
                 <div class="form-group">
-                    <label for="finalAssessmentName">Assessment Type:</label>
-                    <select id="finalAssessmentName" class="input-field" required>
+                    <label for="assessmentName">Assessment Type:</label>
+                    <select id="assessmentName" class="input-field" required>
                         <option value="" disabled selected></option>
                         <option value="Midterm Exam(s)">Midterm Exam(s)</option>
                         <option value="Test(s)">Test(s)</option>
@@ -61,31 +61,37 @@
                         <option value="Essay(s)">Essay(s)</option>
                         <option value="Lecture Attendance">Lecture Attendance</option>
                         <option value="Lab Attendance">Lab Attendance</option>
+                        <option value="Final Exam">Final Exam</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="finalAssessmentWeight">Assigned Weight:</label>
-                    <input type="text" id="finalAssessmentWeight" class="input-field" placeholder="0-100">
+                <div class="form-group custom-input-group hidden" id="customInputGroup">
+                    <label for="customAssessmentName">Custom Assessment Name:</label>
+                    <input type="text" id="customAssessmentName" class="input-field" placeholder="Enter custom assessment name">
                 </div>
                 
                 <div class="form-group">
-                    <label for="finalAssessmentGrade">Achieved Grade:</label>
-                    <input type="text" id="finalAssessmentGrade" class="input-field" placeholder="0-100">
+                    <label for="assessmentWeight">Assigned Weight:</label>
+                    <input type="text" id="assessmentWeight" class="input-field" placeholder="0-100">
                 </div>
                 
-                <button id="addFinalAssessment" class="btn"><i class="fas fa-plus"></i> Add Assessment</button>
+                <div class="form-group">
+                    <label for="assessmentGrade">Achieved Grade:</label>
+                    <input type="text" id="assessmentGrade" class="input-field" placeholder="0-100">
+                </div>
+                
+                <button id="addAssessment" class="btn"><i class="fas fa-plus"></i> Add Assessment</button>
             </div>
             
-            <div class="weight-warning" id="finalWeightWarning">
+            <div class="weight-warning" id="weightWarning">
                 <!-- Warning message will be generated dynamically -->
             </div>
         </div>
         
         <div class="results-section">
             <div class="assessments-list">
-                <table id="finalAssessmentsTable">
+                <table id="assessmentsTable">
                     <thead>
                         <tr>
                             <th data-full="Assessment"><span>Assessment</span></th>
@@ -95,7 +101,7 @@
                             <th data-full="Actions" class="actions-header"><span>Actions</span></th>
                         </tr>
                     </thead>
-                    <tbody id="finalAssessmentsList">
+                    <tbody id="assessmentsList">
                         <!-- Assessments will be added here dynamically -->
                     </tbody>
                 </table>
@@ -105,29 +111,21 @@
                 <h2 id="courseNameDisplay" class="course-name-display">Course Name</h2>
                 <div class="stats-info">
                     <div class="info-item">
-                        <label>Course Completion:</label>
-                        <span id="finalTotalWeight">0</span>
+                        <label>Total Weight:</label>
+                        <span id="totalWeight">0</span>
                     </div>
                     <div class="info-item">
-                        <label>Current Grade:</label>
-                        <span id="finalCurrentGrade">0</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Final Exam Weight:</label>
-                        <span id="displayFinalExamWeight">0</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Target Grade:</label>
-                        <span id="displayTargetGrade">0</span>
+                        <label>Weighted Sum:</label>
+                        <span id="weightedSum">0</span>
                     </div>
                 </div>
                 <div class="needed-grade">
                     <h3 class="scratchy-heading">according to my calculations...</h3>
-                    <div class="grade-result">You need a <span id="neededGrade">0</span> on your final exam to achieve your target grade.</div>
-                    <p id="neededGradeMessage">Please enter your final exam weight and target grade to calculate.</p>
-                    <div id="bestPossibleGrade" class="best-grade hidden">
-                        <p><i class="fas fa-star"></i> Your best possible overall grade is <span id="maxPossibleGrade">0</span></p>
+                    <div class="grade-result">Your final grade is <span id="finalGrade">0</span>%</div>
+                    <div class="letter-grade">
+                        <span id="letterGrade">N/A</span> (<span id="gradePoint">0.00</span>)
                     </div>
+                    <p id="gradeMessage">Please add assessments to calculate your final grade.</p>
                 </div>
                 <div class="action-buttons">
                     <a href="https://github.com/lucasreydman/what-do-i-need-on-my-final" class="github-button" target="_blank" rel="noopener noreferrer" title="View source code on GitHub">
@@ -139,7 +137,7 @@
         </div>
     </div>
     
-    <script src="script.js"></script>
+    <script src="final-grade.js"></script>
     <footer class="footer">
         <p>Created by Lucas Reydman &middot; Last updated: April 9, 2025</p>
     </footer>
